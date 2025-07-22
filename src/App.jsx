@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 import React { useState } from "react";
 
 import "./App.css";
+=======
+import { useState } from 'react';
+import PlayerTurn from './PlayerTurn.jsx';
+import WinCheck from './WinCheck.jsx';
+>>>>>>> master
 
 // Snakes and ladders board setup
 const snakes = {
@@ -66,6 +72,7 @@ function App() {
   }
 
   return (
+<<<<<<< HEAD
     <>
       <div>
         <a href="https://vite.dev" target="_blank">
@@ -100,11 +107,16 @@ function App() {
       </div>
     </>
   )
+=======
+    <div>
+      <PlayerTurn currentPlayer={currentPlayer} />
+      <button onClick={rollDice}>Roll Dice</button>
+      <WinCheck currentPlayer={currentPlayer === 1 ? 2 : 1} playerPosition={playerPosition} />
+      <h1> Snakes and Ladders</h1>
+    </div>
+   
+  );
+>>>>>>> master
 }
 
 export default App;
-
-
-
-
-
