@@ -1,0 +1,81 @@
+/* General page styles */
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 20px;
+}
+
+/* Game title */
+h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+/* Current turn display */
+#current-player {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Board grid */
+#board {
+  display: grid;
+  grid-template-columns: repeat(10, 50px);
+  grid-template-rows: repeat(10, 50px);
+  gap: 2px;
+  margin: 20px auto;
+  width: fit-content;
+}
+
+/* Each cell */
+.cell {
+  width: 50px;
+  height: 50px;
+  background-color: white;
+  border: 1px solid #ccc;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Shared token style */
+.token {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+}
+
+/* Player 1 token (gold) */
+.token[title="Player 1"] {
+  background-color: gold;
+}
+
+/* Player 2 token (blue), offset so they don't overlap */
+.token[title="Player 2"] {
+  background-color: blue;
+  left: 2px;
+  bottom: 2px;
+}
+
+/* Button */
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+/* Dice output text */
+#dice-output {
+  margin-top: 10px;
+  font-size: 16px;
+}
+
