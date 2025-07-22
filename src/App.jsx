@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import "./App.css";
+import { useState } from 'react';
+import PlayerTurn from './PlayerTurn.jsx';
+import WinCheck from './WinCheck.jsx';
 
 function App() {
   const [playerPos, setPlayerPos] = useState(1);
@@ -42,17 +43,13 @@ function App() {
 
   return (
     <div>
-      <h1> Snakes and Ladders</h1>
-      <div className="board">{generateBoard()}</div>
+      <PlayerTurn currentPlayer={currentPlayer} />
       <button onClick={rollDice}>Roll Dice</button>
-      <p>{diceRoll ? `You rolled: ${diceRoll}` : "Click to roll the dice"}</p>
+      <WinCheck currentPlayer={currentPlayer === 1 ? 2 : 1} playerPosition={playerPosition} />
+      <h1> Snakes and Ladders</h1>
     </div>
+   
   );
 }
 
 export default App;
-
-
-
-
-
