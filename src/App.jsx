@@ -3,17 +3,43 @@ import PlayerTurn from './PlayerTurn.jsx';
 import WinCheck from './WinCheck.jsx';
 
 function App() {
-  const [currentPlayer, setCurrentPlayer] = useState(1);
-  const [playerPosition, setPlayerPosition] = useState({ 1: 0, 2: 0 });
+  const [playerPos, setPlayerPos] = useState(1);
+  const [diceRoll, setDiceRoll] = useState(null);
 
-  const rollDice = () => {
-    const dice = Math.floor(Math.random() * 6) + 1;
-    setPlayerPosition(prev => ({
-      ...prev,
-      [currentPlayer]: prev[currentPlayer] + dice
-    }));
-    setCurrentPlayer(currentPlayer === 1 ? 2 : 1);
-  };
+  function generateBoard() {
+    const boardCells = [];
+    let rowIsEven = false;
+
+    for (let row = 9; row >= 0; row--) {
+      const rowCells = [];
+      for (let col = 0; col < 10; col++) {
+        let cellNum = row * 10 + col + 1;
+        if (rowIsEven) {
+          cellNum = row * 10 + (9 - col) + 1;
+        }
+
+        rowCells.push(
+          <div key={cellNum} className="cell" id={`cell-${cellNum}`}>
+            {cellNum}
+            {cellNum === playerPos && <div className="token"></div>}
+          </div>
+        );
+      }
+      rowIsEven = !rowIsEven;
+      boardCells.push(...rowCells);
+    }
+
+    return boardCells;
+  }
+
+  function rollDice() {
+    const roll = Math.floor(Math.random() * 6) + 1;
+    setDiceRoll(roll);
+
+    let nextPos = playerPos + roll;
+    if (nextPos > 100) nextPos = 100;
+    setPlayerPos(nextPos);
+  }
 
   return (
     <div>
