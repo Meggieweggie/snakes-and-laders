@@ -7,7 +7,6 @@ import GameStatus from './components/GameStatus';
 import { SNAKES, LADDERS, checkSpecialSquare } from './data/boardData';
 import { initializePlayers, movePlayer, switchTurn, checkWin } from './utils/gameLogic';
 
-
 function App() {
   const [players, setPlayers] = useState(initializePlayers());
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
@@ -22,7 +21,6 @@ function App() {
     if (gameOver) return;
 
     setDiceValue(value);
-
     const newPosition = movePlayer(currentPlayer.position, value);
 
     if (newPosition > 100) {
@@ -150,6 +148,5 @@ function App() {
 }
 
 export default App;
-
 
 
