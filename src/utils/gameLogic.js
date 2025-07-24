@@ -1,65 +1,46 @@
-export const BOARD_SIZE = 100;
+// Player data structure
+export const PLAYER_DATA = [
+  { id: 1, name: 'Player 1', position: 0, color: '#FF6B6B' },
+  { id: 2, name: 'Player 2', position: 0, color: '#4ECDC4' }
+];
 
-// Add more snakes and ladders for variety
-export const SNAKES = {
-    16: 6,
-    47: 26,
-    49: 11,
-    56: 53,
-    62: 19,
-    64: 60,
-    87: 24,
-    93: 73,
-    95: 75,
-    98: 78,
-    34: 1,    // new snake
-    76: 54,   // new snake
+// Initialize players
+export const initializePlayers = () => {
+  return PLAYER_DATA.map(player => ({ ...player }));
 };
 
-export const LADDERS = {
-    1: 38,
-    4: 14,
-    9: 31,
-    21: 42,
-    28: 84,
-    36: 44,
-    51: 67,
-    71: 91,
-    80: 100,
-    20: 59,   // new ladder
-    63: 81,   // new ladder
+// Move player by dice value
+export const movePlayer = (currentPosition, diceValue) => {
+  const newPosition = currentPosition + diceValue;
+  return newPosition <= 100 ? newPosition : currentPosition;
 };
 
-// Add bonus squares and penalty squares
-export const BONUS_SQUARES = {
-    13: 5,   // move forward 5
-    50: 10,  // move forward 10
+// Switch to next player
+export const switchTurn = (currentIndex, totalPlayers) => {
+  return (currentIndex + 1) % totalPlayers;
 };
 
-export const PENALTY_SQUARES = {
-    29: 3,   // move back 3
-    77: 7,   // move back 7
+// Check win condition
+export const checkWin = (position) => {
+  return position === 100;
 };
 
-// Check if position triggers snake, ladder, bonus, or penalty
-export const applySnakesAndLadders = (position) => {
-    if (SNAKES[position]) return SNAKES[position];
-    if (LADDERS[position]) return LADDERS[position];
-    if (BONUS_SQUARES[position]) {
-        let newPos = position + BONUS_SQUARES[position];
-        return newPos > BOARD_SIZE ? BOARD_SIZE : newPos;
-    }
-    if (PENALTY_SQUARES[position]) {
-        let newPos = position - PENALTY_SQUARES[position];
-        return newPos < 1 ? 1 : newPos;
-    }
-    return position;
+// Get game state message
+export const getGameStateMessage = (player, action, newPosition) => {
+  switch (action) {
+    case 'move':
+      return ${player.name} moved to ${newPosition};
+    case 'snake':
+      return ${player.name} got bitten by a snake! Slid to ${newPosition};
+    case 'ladder':
+      return ${player.name} climbed a ladder! Moved to ${newPosition};
+    case 'win':
+      return 🎉 ${player.name} wins the game! 🎉;
+    case 'invalid':
+      return ${player.name} needs exact roll to win. Try again!;
+    default:
+      return ${player.name}'s turn;
+  }
 };
 
-// Roll dice (add option for double dice)
-export const rollDice = (double = false) => {
-    if (double) {
-        return Math.floor(Math.random() * 6) + 1 + Math.floor(Math.random() * 6) + 1;
-    }
-    return Math.floor(Math.random() * 6) + 1;
-};
+Show les

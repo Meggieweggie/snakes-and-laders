@@ -1,122 +1,174 @@
-<<<<<<< HEAD
-import React { useState } from "react";
 
-import "./App.css";
-=======
-import { useState } from 'react';
-import PlayerTurn from './PlayerTurn.jsx';
-import WinCheck from './WinCheck.jsx';
->>>>>>> master
+import React, { useState } from 'react';
+import './App.css';
+import GameBoard from './components/GameBoard';
+import PlayerInfo from './components/PlayerInfo';
+import DiceRoller from './components/DiceRoller';
+import GameStatus from './components/GameStatus';
+import { snakes, ladders } from "./data/boardData";
 
-// Snakes and ladders board setup
-const snakes = {
-  16: 6,
-  47: 26,
-  49: 11,
-  56: 53,
-  62: 19,
-  64: 60,
-  87: 24,
-  93: 73,
-  95: 75,
-  98: 78,
-};
-const ladders = {
-  1: 38,
-  4: 14,
-  9: 31,
-  21: 42,
-  28: 84,
-  36: 44,
-  51: 67,
-  71: 91,
-  80: 100,
-};
+// Game constants (provided by khalid.mohamed1)
+import { SNAKES, LADDERS } from './utils/boardConfig';
+// Game logic (provided by christian.michael)
+import { initializePlayers, movePlayer, switchTurn, checkWin } from './utils/gameLogic';
+// UI components (provided by eugene.muruga)
+import { checkSpecialSquare } from './utils/boardConfig';
 
 function App() {
-  const [count, setCount] = useState(0)
-  const numPlayers = 2;
-  const [playerPositions, setPlayerPositions] = useState(Array(numPlayers).fill(1));
-  const [currentPlayer, setCurrentPlayer] = useState(0);
-  const [message, setMessage] = useState('');
+  // Game state management (provided by christian.michael)
+  const [players, setPlayers] = useState(initializePlayers());
+  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
+  const [diceValue, setDiceValue] = useState(1);
+  const [gameOver, setGameOver] = useState(false);
+  const [winner, setWinner] = useState(null);
+  const [message, setMessage] = useState("Player 1's turn. Roll the dice!");
 
-  function rollDice() {
-    const roll = Math.floor(Math.random() * 6) + 1;
-    let nextPos = playerPositions[currentPlayer] + roll;
-    let eventMsg = `Player ${currentPlayer + 1} rolled a ${roll}.`;
-    if (nextPos > 100) {
-      eventMsg += " Can't move, need exact roll to finish.";
-      setMessage(eventMsg);
+  const currentPlayer = players[currentPlayerIndex];
+
+  // Handle dice roll and game logic (integration by megan.mumbi)
+  const handleDiceRoll = (value) => {
+    if (gameOver) return;
+
+    setDiceValue(value);
+
+    // Game logic implementation (provided by christian.michael)
+    const newPosition = movePlayer(currentPlayer.position, value);
+
+    // Check if player can move
+    if (newPosition > 100) {
+      setMessage(${currentPlayer.name} needs exact roll to win. Try again!);
+      switchPlayerTurn();
       return;
     }
-    // Check for ladders
-    if (ladders[nextPos]) {
-      eventMsg += ` Landed on a ladder! Climb up to ${ladders[nextPos]}.`;
-      nextPos = ladders[nextPos];
+
+    // Update position
+    const updatedPlayers = [...players];
+    updatedPlayers[currentPlayerIndex].position = newPosition;
+    setPlayers(updatedPlayers);
+
+    // Check for snake or ladder (provided by khalid.mohamed1)
+    const specialMove = checkSpecialSquare(newPosition);
+    if (specialMove) {
+      setTimeout(() => {
+        const finalPosition = specialMove.newPosition;
+        const updatedPlayersAfterSpecial = [...players];
+        updatedPlayersAfterSpecial[currentPlayerIndex].position = finalPosition;
+        setPlayers(updatedPlayersAfterSpecial);
+
+        if (specialMove.type === 'snake') {
+          setMessage(${currentPlayer.name} got bitten by a snake! Slid to ${finalPosition});
+        } else {
+          setMessage(${currentPlayer.name} climbed a ladder! Moved to ${finalPosition});
+        }
+
+        switchPlayerTurn();
+      }, 1000);
+      return;
+    } else {
+      setMessage(${currentPlayer.name} moved to ${newPosition});
     }
-    // Check for snakes
-    else if (snakes[nextPos]) {
-      eventMsg += ` Oh no, a snake! Slide down to ${snakes[nextPos]}.`;
-      nextPos = snakes[nextPos];
-    }
-    const newPositions = [...playerPositions];
-    newPositions[currentPlayer] = nextPos;
-    setPlayerPositions(newPositions);
-    if (nextPos === 100) {
-      eventMsg += ` Player ${currentPlayer + 1} wins!`;
-      setMessage(eventMsg);
+
+    // Check for win (provided by khalid.mohamed1)
+    if (checkWin(newPosition)) {
+      setGameOver(true);
+      setWinner(currentPlayer);
+      setMessage(🎉 ${currentPlayer.name} wins the game! 🎉);
       return;
     }
-    setMessage(eventMsg);
-    setCurrentPlayer((currentPlayer + 1) % numPlayers);
-  }
+
+    switchPlayerTurn();
+  };
+
+  // Turn management (provided by christian.michael)
+  const switchPlayerTurn = () => {
+    setTimeout(() => {
+      const nextPlayerIndex = switchTurn(currentPlayerIndex, players.length);
+      setCurrentPlayerIndex(nextPlayerIndex);
+      if (!gameOver) {
+        setMessage(${players[nextPlayerIndex].name}'s turn);
+      }
+    }, 1500);
+  };
+
+  // Reset game functionality (implemented by megan.mumbi)
+  const resetGame = () => {
+    setPlayers(initializePlayers());
+    setCurrentPlayerIndex(0);
+    setDiceValue(1);
+    setGameOver(false);
+    setWinner(null);
+    setMessage("Player 1's turn. Roll the dice!");
+  };
 
   return (
-<<<<<<< HEAD
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="app">
+      <header>
+        <h1>:snake: Snake and Ladder Game :ladder:</h1>
+      </header>
+      
+      <div className="game-container">
+        <div className="game-sidebar">
+          <div className="players-section">
+            <h2>Players</h2>
+            {players.map((player, index) => (
+              <PlayerInfo
+                key={player.id}
+                player={player}
+                isActive={index === currentPlayerIndex && !gameOver}
+              />
+            ))}
+          </div>
+          
+          <div className="dice-section">
+            <DiceRoller 
+              onRoll={handleDiceRoll}
+              disabled={gameOver}
+            />
+            <div className="dice-display">Dice: {diceValue}</div>
+          </div>
+          
+          <GameStatus message={message} />
+          
+          <button onClick={resetGame} className="reset-button">
+            Reset Game
+          </button>
+        </div>
+        
+        <div className="board-section">
+          <GameBoard 
+            players={players}
+            snakes={SNAKES}
+            ladders={LADDERS}
+          />
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+      
+      {gameOver && winner && (
+        <div className="game-over-modal">
+          <div className="winner-card">
+            <h2>Game Over!</h2>
+            <div className="winner-info">
+              <div 
+                className="winner-token" 
+                style={{ backgroundColor: winner.color }}
+
+          ></div>
+          <h3>{winner.name} Wins!</h3>
+        </div>
+        <button onClick={resetGame} className="play-again-button">
+          Play Again
         </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-      <h2>Snakes and Ladders (Multiplayer)</h2>
-      <div className="card">
-        <p>Current turn: Player {currentPlayer + 1}</p>
-        {playerPositions.map((pos, idx) => (
-          <p key={idx}>Player {idx + 1} position: {pos}</p>
-        ))}
-        <button onClick={rollDice} disabled={playerPositions[currentPlayer] === 100}>
-          Roll Dice
-        </button>
-        <p>{message}</p>
-      </div>
-    </>
-  )
-=======
-    <div>
-      <PlayerTurn currentPlayer={currentPlayer} />
-      <button onClick={rollDice}>Roll Dice</button>
-      <WinCheck currentPlayer={currentPlayer === 1 ? 2 : 1} playerPosition={playerPosition} />
-      <h1> Snakes and Ladders</h1>
     </div>
-   
+  )}
+</div>
   );
->>>>>>> master
 }
 
 export default App;
+
+
+
+
+
+
