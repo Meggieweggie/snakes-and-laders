@@ -25,22 +25,19 @@ export const checkWin = (position) => {
   return position === 100;
 };
 
-// Get game state message
 export const getGameStateMessage = (player, action, newPosition) => {
   switch (action) {
     case 'move':
-      return ${player.name} moved to ${newPosition};
+      return `${player.name} moved to ${newPosition}`;
     case 'snake':
-      return ${player.name} got bitten by a snake! Slid to ${newPosition};
+      return `${player.name} got bitten by a snake! Slid to ${newPosition}`;
     case 'ladder':
-      return ${player.name} climbed a ladder! Moved to ${newPosition};
+      return `${player.name} climbed a ladder! Moved to ${newPosition}`;
     case 'win':
-      return 🎉 ${player.name} wins the game! 🎉;
+      return `🎉 ${player.name} wins the game! 🎉`;
     case 'invalid':
-      return ${player.name} needs exact roll to win. Try again!;
+      return `${player.name} needs exact roll to win. Try again!`;
     default:
-      return ${player.name}'s turn;
+      return `${player.name}'s turn`;
   }
 };
-
-Show les

@@ -1,4 +1,6 @@
-export const snakes = {
+
+
+export const SNAKES = {
   16: 6,
   47: 26,
   49: 11,
@@ -11,7 +13,7 @@ export const snakes = {
   98: 78,
 };
 
-export const ladders = {
+export const LADDERS = {
   1: 38,
   4: 14,
   9: 31,
@@ -22,3 +24,13 @@ export const ladders = {
   71: 91,
   80: 100,
 };
+
+
+export function checkSpecialSquare(position) {
+  if (SNAKES[position]) {
+    return { type: "snake", newPosition: SNAKES[position] };
+  } else if (LADDERS[position]) {
+    return { type: "ladder", newPosition: LADDERS[position] };
+  }
+  return null;
+}
