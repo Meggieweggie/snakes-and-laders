@@ -19,7 +19,7 @@ This is a web-based implementation of the classic **Snakes and Ladders** board g
 - Modular component structure  
 - Basic data-driven logic using utility functions  
 
-## Folder Structure##
+## Folder Structure#
 
 ```
 src/
